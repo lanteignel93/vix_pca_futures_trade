@@ -7,8 +7,8 @@ from pathlib import Path
 import polars as pl
 from polars.exceptions import ColumnNotFoundError
 
-from ._configs import TARGET_TIME_CT
-from ._utilis import (
+from vix_pca._configs import TARGET_TIME_CT
+from vix_pca._utilis import (
     contract_key_from_symbol,
     infer_symbol_from_filename,
     parse_expiry_file,

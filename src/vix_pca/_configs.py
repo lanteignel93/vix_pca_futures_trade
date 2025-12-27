@@ -15,7 +15,7 @@ CODE_TO_MONTH = {c: i + 1 for i, c in enumerate(FUT_MONTHS)}
 CONTRACT_RE = re.compile(r"VI(?P<mcode>[FGHJKMNQUVXZ])(?P<yy>\d{2})$", re.IGNORECASE)
 FILENAME_RE = re.compile(r"vi(?P<mcode>[fghjkmnquvxz])(?P<yy>\d{2})", re.IGNORECASE)
 
-PROJECT_ROOT = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 CONFIG_DIR = PROJECT_ROOT / "config"
 DATA_DIR = PROJECT_ROOT / "data"
 EXPIRIES_TXT = CONFIG_DIR / "expiries.txt"

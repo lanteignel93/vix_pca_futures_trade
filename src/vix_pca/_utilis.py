@@ -7,7 +7,7 @@ from pathlib import Path
 
 import polars as pl
 
-from ._configs import CODE_TO_MONTH, CONTRACT_RE, FILENAME_RE
+from vix_pca._configs import CODE_TO_MONTH, CONTRACT_RE, FILENAME_RE
 
 
 @dataclass(frozen=True)

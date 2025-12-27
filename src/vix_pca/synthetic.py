@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 import polars as pl
 
-from ._utilis import require_columns
+from vix_pca._utilis import require_columns
 
 
 @dataclass
