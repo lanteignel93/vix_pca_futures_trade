@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+
 import polars as pl
 
 from ._utilis import require_columns
@@ -19,9 +20,7 @@ class ConstantMaturityWeighter:
             out = out.join(w, on=["tradingDay", "symbol", "ttm_days"], how="left")
         return out
 
-    def _weights_for_tenor(
-        self, term_df: pl.DataFrame, target_days: float
-    ) -> pl.DataFrame:
+    def _weights_for_tenor(self, term_df: pl.DataFrame, target_days: float) -> pl.DataFrame:
         df = term_df.select(["tradingDay", "symbol", "ttm_days"]).sort(
             ["tradingDay", "ttm_days", "symbol"]
         )
@@ -47,9 +46,7 @@ class ConstantMaturityWeighter:
         if not self.clamp:
             bad = bounds.filter(pl.col("d1").is_null() | pl.col("d2").is_null())
             if bad.height > 0:
-                raise ValueError(
-                    "Target outside available maturities for at least one tradingDay."
-                )
+                raise ValueError("Target outside available maturities for at least one tradingDay.")
 
         bounds = (
             bounds.join(
@@ -96,20 +93,12 @@ class ConstantMaturityWeighter:
             df.join(bounds, on="tradingDay", how="left")
             .with_columns(
                 pl.when(pl.col("d1") == pl.col("d2"))
-                .then(
-                    pl.when(pl.col("symbol") == pl.col("sym1")).then(1.0).otherwise(0.0)
-                )
+                .then(pl.when(pl.col("symbol") == pl.col("sym1")).then(1.0).otherwise(0.0))
                 .otherwise(
                     pl.when(pl.col("symbol") == pl.col("sym1"))
-                    .then(
-                        (pl.col("d2") - pl.lit(target_days))
-                        / (pl.col("d2") - pl.col("d1"))
-                    )
+                    .then((pl.col("d2") - pl.lit(target_days)) / (pl.col("d2") - pl.col("d1")))
                     .when(pl.col("symbol") == pl.col("sym2"))
-                    .then(
-                        (pl.lit(target_days) - pl.col("d1"))
-                        / (pl.col("d2") - pl.col("d1"))
-                    )
+                    .then((pl.lit(target_days) - pl.col("d1")) / (pl.col("d2") - pl.col("d1")))
                     .otherwise(0.0)
                 )
                 .alias(weight_col)
@@ -120,9 +109,7 @@ class ConstantMaturityWeighter:
 
 
 if __name__ == "__main__":
-    from pathlib import Path
     import polars as pl
-
     from vix_futures_trade._configs import Paths
     from vix_futures_trade._utilis import ensure_dir
     from vix_futures_trade.term_structure import TermStructureBuilder
@@ -144,8 +131,7 @@ if __name__ == "__main__":
     print("term_w shape:", term_w.shape)
     print(
         term_w.select(
-            ["tradingDay", "symbol", "ttm_days", "close"]
-            + [f"weight_{t}d" for t in tenors]
+            ["tradingDay", "symbol", "ttm_days", "close"] + [f"weight_{t}d" for t in tenors]
         ).head(10)
     )
 
@@ -164,9 +150,7 @@ if __name__ == "__main__":
     tol = 1e-6
     for t in tenors:
         bad = sums.filter((pl.col(f"sum_{t}d") - 1.0).abs() > tol)
-        assert (
-            bad.height == 0
-        ), f"Weight sums not ~1 for tenor {t}d; sample:\n{bad.head(5)}"
+        assert bad.height == 0, f"Weight sums not ~1 for tenor {t}d; sample:\n{bad.head(5)}"
 
     # Write the weighted term structure (this is your requested stage-2 artifact)
     term_w.write_parquet(paths.out_term_with_weights)

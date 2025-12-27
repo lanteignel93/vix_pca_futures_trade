@@ -1,10 +1,10 @@
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from datetime import time
 from pathlib import Path
 from zoneinfo import ZoneInfo
-import re
 
 CT_TZ = ZoneInfo("America/Chicago")
 TARGET_TIME_CT = time(14, 55)  # 2:55pm CT
@@ -24,8 +24,8 @@ EXPIRIES_TXT = CONFIG_DIR / "expiries.txt"
 @dataclass(frozen=True)
 class Paths:
     """Centralize IO paths; can be overridden by callers."""
+
     data_root: Path  # where CSVs live (external path)
     expiries_txt: Path = EXPIRIES_TXT
     out_term_with_weights: Path = DATA_DIR / "term_with_weights.parquet"
     out_synthetics: Path = DATA_DIR / "synthetic_prices.parquet"
-

@@ -2,12 +2,12 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, date
+from datetime import date, datetime
 from pathlib import Path
 
 import polars as pl
 
-from ._configs import CONTRACT_RE, FILENAME_RE, CODE_TO_MONTH
+from ._configs import CODE_TO_MONTH, CONTRACT_RE, FILENAME_RE
 
 
 @dataclass(frozen=True)
@@ -55,4 +55,3 @@ def require_columns(df: pl.DataFrame, cols: list[str]) -> None:
     missing = [c for c in cols if c not in df.columns]
     if missing:
         raise ValueError(f"Missing required columns: {missing}")
-

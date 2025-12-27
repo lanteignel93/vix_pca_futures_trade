@@ -9,9 +9,9 @@ from polars.exceptions import ColumnNotFoundError
 
 from ._configs import TARGET_TIME_CT
 from ._utilis import (
-    parse_expiry_file,
     contract_key_from_symbol,
     infer_symbol_from_filename,
+    parse_expiry_file,
     require_columns,
 )
 
@@ -27,15 +27,11 @@ class TermStructureBuilder:
 
         if df.schema.get("timestamp") != pl.Datetime:
             df = df.with_columns(
-                pl.col("timestamp")
-                .str.strptime(pl.Datetime, strict=False)
-                .alias("timestamp")
+                pl.col("timestamp").str.strptime(pl.Datetime, strict=False).alias("timestamp")
             )
 
         df = df.with_columns(
-            pl.col("tradingDay")
-            .str.strptime(pl.Date, "%Y-%m-%d", strict=False)
-            .alias("tradingDay")
+            pl.col("tradingDay").str.strptime(pl.Date, "%Y-%m-%d", strict=False).alias("tradingDay")
         )
 
         df = df.with_columns(
@@ -54,9 +50,7 @@ class TermStructureBuilder:
             pl.col("timestamp").dt.convert_time_zone("America/Chicago").alias("ts_ct")
         )
 
-        df = df.with_columns(
-            (pl.col("ts_ct") - pl.col("target_ts")).abs().alias("abs_diff")
-        )
+        df = df.with_columns((pl.col("ts_ct") - pl.col("target_ts")).abs().alias("abs_diff"))
 
         return (
             df.sort(["symbol", "tradingDay", "abs_diff"])
@@ -100,7 +94,7 @@ class TermStructureBuilder:
             expiry_dates: list[date | None] = []
             ttm_days: list[int | None] = []
 
-            for s, d in zip(sym, td):
+            for s, d in zip(sym, td, strict=False):
                 ck = contract_key_from_symbol(s)
                 exp = expiries.get(ck)
                 expiry_dates.append(exp)
@@ -121,8 +115,8 @@ class TermStructureBuilder:
 
 if __name__ == "__main__":
     from pathlib import Path
-    import polars as pl
 
+    import polars as pl
     from vix_futures_trade._configs import Paths
     from vix_futures_trade._utilis import ensure_dir
 
@@ -141,15 +135,9 @@ if __name__ == "__main__":
 
     # Basic sanity checks
     assert term_df.height > 0, "term_df is empty"
-    assert {"symbol", "tradingDay", "close", "expiry", "ttm_days"}.issubset(
-        set(term_df.columns)
-    )
-    assert (
-        term_df.filter(pl.col("ttm_days") <= 0).height == 0
-    ), "Found non-positive ttm_days"
-    assert (
-        term_df.filter(pl.col("close").is_null()).height == 0
-    ), "Found null close values"
+    assert {"symbol", "tradingDay", "close", "expiry", "ttm_days"}.issubset(set(term_df.columns))
+    assert term_df.filter(pl.col("ttm_days") <= 0).height == 0, "Found non-positive ttm_days"
+    assert term_df.filter(pl.col("close").is_null()).height == 0, "Found null close values"
 
     # Optional: write a raw output for inspection
     out_path = paths.out_term_with_weights.with_name("term_raw.parquet")
