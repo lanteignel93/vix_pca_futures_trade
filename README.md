@@ -14,7 +14,7 @@ The VIX futures curve is highly correlated. This project uses **Principal Compon
 
 Understanding these factors allows for better hedging and "Curve Trading" (e.g., betting on the slope steepening without taking direction risk).
 
-## 🛠️ Installationn
+## 🛠️ Installation
 
 This project uses modern packaging with `uv`.
 
