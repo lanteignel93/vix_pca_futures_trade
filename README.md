@@ -8,9 +8,9 @@ A quantitative research tool for analyzing the Principal Components of the VIX F
 ## 📊 Strategy Logic
 
 The VIX futures curve is highly correlated. This project uses **Principal Component Analysis (PCA)** to decompose the returns of the term structure into orthogonal factors:
-1.  **PC1 (Level):** ~85-90% of variance (Parallel shifts in volatility).
-2.  **PC2 (Slope):** ~5-10% of variance (Changes in Contango/Backwardation).
-3.  **PC3 (Curvature):** ~1-2% of variance (Butterfly shifts).
+1.  **PC1 (Level):** ~90-98% of variance (Parallel shifts in volatility).
+2.  **PC2 (Slope):** ~1-7% of variance (Changes in Contango/Backwardation).
+3.  **PC3 (Curvature):** ~0-3% of variance (Butterfly shifts).
 
 Understanding these factors allows for better hedging and "Curve Trading" (e.g., betting on the slope steepening without taking direction risk).
 
