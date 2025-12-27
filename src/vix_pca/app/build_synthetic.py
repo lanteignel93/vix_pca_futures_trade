@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from pathlib import Path
 import polars as pl
 
-from .._configs import Paths
-from .._utilis import ensure_dir
-from ..synthetic import SyntheticPriceBuilder
+from vix_pca._configs import Paths
+from vix_pca._utilis import ensure_dir
+from vix_pca.synthetic import SyntheticPriceBuilder
 
 
 def main() -> None:

@@ -25,7 +25,7 @@ EXPIRIES_TXT = CONFIG_DIR / "expiries.txt"
 class Paths:
     """Centralize IO paths; can be overridden by callers."""
 
-    data_root: Path  # where CSVs live (external path)
+    data_root: Path = Path()
     expiries_txt: Path = EXPIRIES_TXT
     out_term_with_weights: Path = DATA_DIR / "term_with_weights.parquet"
     out_synthetics: Path = DATA_DIR / "synthetic_prices.parquet"
